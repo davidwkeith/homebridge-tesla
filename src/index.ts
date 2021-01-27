@@ -26,6 +26,7 @@ class TeslaAccessory {
   password: string | null;
   waitMinutes: number;
   authToken: string | null;
+  refreshToken: string | null;
   latitude: number;
   longitude: number;
   disableDoors: boolean | null;
@@ -62,6 +63,7 @@ class TeslaAccessory {
     this.password = config["password"];
     this.waitMinutes = config["waitMinutes"] || 1; // default to one minute.
     this.authToken = config["authToken"];
+    this.refreshToken = config["refreshToken"];
     this.latitude = config["latitude"];
     this.longitude = config["longitude"];
     this.disableDoors = config["disableDoors"] || false;
@@ -649,19 +651,27 @@ class TeslaAccessory {
     const unlock = await lock("getAuthToken", 20000);
 
     try {
-      const { username, password, authToken } = this;
-
+      const { username, password, authToken, refreshToken } = this;
+      let aToken: String | null = null;
       // Return cached value if we have one.
-      if (authToken) return authToken;
+      if (authToken) {
+        // if still valid
+        return authToken;
+        // }
+        // else {
+        //   this.authToken = this.refreshToken(authToken)
+        //   return this.authToken;
+        // }
+      }
 
       this.log("Logging into Tesla with username/password…");
       const result = await api("login", username, password);
-      const token = result.authToken;
 
       // Save it in memory for future API calls.
+      this.authToken = result.authToken;
       this.log("Got a login token.");
-      this.authToken = token;
-      return token;
+
+      return result.authToken;
     } finally {
       unlock();
     }

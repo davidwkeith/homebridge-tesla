@@ -2,30 +2,34 @@
 
 Example config.json:
 
+```json
+{
+  "accessories": [
     {
-      "accessories": [
-        {
-          "accessory": "Tesla",
-          "name": "Model 3",
-          "vin": "5JJYCB522AB296261",
-          "username": "bobs@burgers.com",
-          "password": "bobbobbaran",
-          "authToken": "authToken",
-          "waitMinutes": 1
-        }
-      ]
+      "accessory": "Tesla",
+      "name": "Model 3",
+      "vin": "5JJYCB522AB296261",
+      "username": "bobs@burgers.com",
+      "password": "bobbobbaran",
+      "authToken": "authToken",
+      "refreshToken": "refreshToken",
+      "waitMinutes": 1
     }
+  ]
+}
+```
 
 Exposes lock services for doors, trunk, and front trunk. Also exposes an on/off switch for climate control, charge state, and keyless driving.
 
 _If_ you define a value for `waitMinutes`, you can control the amount of
 time the plugin will wait for the car to wake up. The default is one minute.
 
-_If_ you define a value for `authToken`,
+_If_ you define a value for `authToken` and `refreshToken`,
 you do not need to provide your username or password credentials.
 Generating a token can be done many ways.
 [Tokens for Teslas](https://tokens-for-teslas.herokuapp.com) is one option.
-`npm install -g generate-tesla-token` is another.
+(Does not currently generate a refresh token, so will need to re-auth in 90 days)
+`npm install -g generate-tesla-token` is another, which fully supports refresh tokens.
 
 If you use the example above, you would gain Siri commands like:
 
